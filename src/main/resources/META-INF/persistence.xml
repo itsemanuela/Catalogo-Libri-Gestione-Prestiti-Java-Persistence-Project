@@ -7,6 +7,13 @@
     <persistence-unit name="catalogo-libri">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <class>entities.Riviste</class>
+        <class>entities.Libri</class>
+        <class>entities.Catalogo</class>
+        <class>entities.Prestito</class>
+        <class>entities.Utente</class>
+
+
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/catalogo_libri"/>
