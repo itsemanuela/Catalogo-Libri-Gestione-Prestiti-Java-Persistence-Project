@@ -225,7 +225,20 @@ public class Main {
                 });
             }
 
+            //test prestiti scaduti
+            System.out.println("********************************************");
+            System.out.println("***********PRESTITI SCADUTI NON RESTITUITI***********");
 
+            List<Prestito> scaduti = prestitoDAO.cercaPrestitiScaduti();
+
+            System.out.println("Numero di prestiti scaduti: " + scaduti.size());
+
+            scaduti.forEach(p -> {
+                System.out.println("Utente: " + p.getUtente().getNome());
+                System.out.println("Elemento: " + p.getElementoPrestato().getTitolo());
+                System.out.println("Data scadenza originale: " + p.getDataRestituzionePrevista());
+            });
+//Ho 0 prestiti scaduti, ma faro una prova per far crashare
 
             System.out.println("--- OPERAZIONI COMPLETATE ---");
 

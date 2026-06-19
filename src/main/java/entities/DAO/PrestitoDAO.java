@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,5 +51,21 @@ public class PrestitoDAO {
                 .setParameter("id", utenteId)
                 .getResultList();
     }
+
+    //ricerca tutti i prestiti scaduti e non ancora restituiti
+
+    public List<Prestito> cercaPrestitiScaduti() {
+        // La data odierna per il confronto
+        LocalDate oggi = LocalDate.now();
+
+        String jpql = "SELECT p FROM Prestito p " +
+                "WHERE p.dataRestituzioneEffettiva IS NULL " +
+                "AND p.dataRestituzionePrevista < :dataOggi";
+
+        return em.createQuery(jpql, Prestito.class)
+                .setParameter("dataOggi", oggi)
+                .getResultList();
+    }
+
 
 }
