@@ -1,6 +1,8 @@
 package entities.DAO;
 
 import entities.Catalogo;
+import entities.Libri;
+import entities.exceptions.ElementoGiaEsistenteException;
 import entities.exceptions.ElementoNonTrovatoException;
 import entities.exceptions.SalvataggioException;
 import jakarta.persistence.EntityManager;
@@ -96,10 +98,24 @@ public List<Catalogo> cercaPerAnno(int anno) {
 }
 
 // metodo cerca per autore
-public List<Catalogo> cercaPerAutore(String autore) {
-    return em.createQuery("SELECT c FROM Catalogo c WHERE c.autore = :autore", Catalogo.class)
+public List<Libri> cercaPerAutore(String autore) {
+    // Usiamo 'Libro' invece di 'Catalogo' nella query
+    // In questo modo JPA capisce che deve guardare nella tabella dei Libri
+    return em.createQuery("SELECT l FROM Libri l WHERE l.autore = :autore", Libri.class)
             .setParameter("autore", autore)
             .getResultList();
 }
 
+//metodo per aggiungere un elemento
+
+    public void aggiungiElemento(Catalogo elemento) throws ElementoGiaEsistenteException {
+        EntityTransaction transazione = em.getTransaction();
+        try {
+            transazione.begin();
+            em.persist(elemento);
+            transazione.commit();
+        } catch (Exception e) {
+            throw new ElementoGiaEsistenteException("Errore: impossibile aggiungere, ISBN probabilmente esistente.");
+        }
+    }
 }

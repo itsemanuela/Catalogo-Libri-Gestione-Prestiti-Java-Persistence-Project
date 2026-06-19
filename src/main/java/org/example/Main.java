@@ -4,6 +4,7 @@ import entities.*;
 import entities.DAO.CatalogoDAO;
 import entities.DAO.PrestitoDAO;
 import entities.DAO.UtenteDAO;
+import entities.exceptions.ElementoGiaEsistenteException;
 import entities.exceptions.ElementoNonTrovatoException;
 import entities.exceptions.SalvataggioException;
 import jakarta.persistence.EntityManager;
@@ -174,19 +175,28 @@ public class Main {
             System.out.println("--- TEST CONCLUSO ---");
 
 
-
+            System.out.println("=============================METODI=============================");
 
 // cerco per anno
             List<Catalogo> perAnno = catalogoDAO.cercaPerAnno(2023);
-            perAnno.forEach(c -> System.out.println("Anno 2023: " + c.getTitolo()));
+            perAnno.forEach(c -> System.out.println("Anno: " + c.getAnno_pubblicazione()));
 //quando eseguo entrambi qs metodi il db fa il lavoro di JOIN tra le tabelle
 // cerco per autore
-            List<Catalogo> perAutore = catalogoDAO.cercaPerAutore("Stephen King");
+            List<Libri> perAutore = catalogoDAO.cercaPerAutore("Matteo Bianchi");
             perAutore.forEach(c -> System.out.println("Libro trovato: " + c.getTitolo()));
 
 
+            //testo il metodo per aggiungere un elemento al catalogo
+            Libri nuovoLibro = new Libri();
+            nuovoLibro.setCodice_isbn("123-ABC");
+            nuovoLibro.setTitolo("Il mio libro-Emanuela");
+            nuovoLibro.setAnno_pubblicazione(2026);
+            nuovoLibro.setNumero_pagine(100);
+            nuovoLibro.setAutore("Emanuela");
+            nuovoLibro.setGenere("Saggistica");
 
-
+            catalogoDAO.aggiungiElemento(nuovoLibro);
+            System.out.println("Nuovo libro aggiunto" + " " +  nuovoLibro.getTitolo());
 
 
 
