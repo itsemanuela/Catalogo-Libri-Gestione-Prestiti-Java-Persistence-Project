@@ -1,14 +1,14 @@
 package org.example;
 
+import entities.*;
 import entities.DAO.CatalogoDAO;
+import entities.DAO.PrestitoDAO;
 import entities.DAO.UtenteDAO;
-import entities.Libri;
-import entities.Riviste;
-import entities.PeriodicitaRiviste;
-import entities.Utente;
+import entities.exceptions.SalvataggioException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 
 import java.time.LocalDate;
 
@@ -32,6 +32,7 @@ public class Main {
             // istanzio DAO passandogli l'EntityManager attivo
             CatalogoDAO catalogoDAO = new CatalogoDAO(em);
             UtenteDAO utenteDAO = new UtenteDAO(em);
+            PrestitoDAO prestitoDAO = new PrestitoDAO(em);
 
 
             System.out.println("--- INIZIO CREAZIONE E SALVATAGGIO DATI ---");
@@ -83,11 +84,69 @@ public class Main {
             catalogoDAO.salva(rivista4);
             catalogoDAO.salva(rivista5);
 
+
+            // per la logica dei prestiti andrò a recuperare dal db tramite l'em e tramite l'id PK
+            // dei libri o riviste per simulare dei prestiti.
+            // visto che sarà una lista di prestiti la istanzio come un array vuoto
+
+            //libri.class => visto che il db non sa cosa sia una classe perchè vede solo tabelle e colonne,
+            // con find libri.class sto dicendo all'em di cercare e trovare dalla tabella libri che corrisponde appunto
+            // alla class Libri di cercare il libro con la pk che gli ho fornito.
+
+            // --- RICERCA LIBRI ---
+            Libri l1 = em.createQuery("SELECT l FROM Libri l WHERE l.codice_isbn = :isbn", Libri.class)
+                    .setParameter("isbn", "978-8830455123")
+                    .getSingleResult();
+
+            Libri l2 = em.createQuery("SELECT l FROM Libri l WHERE l.codice_isbn = :isbn", Libri.class)
+                    .setParameter("isbn", "978-8817099431")
+                    .getSingleResult();
+
+            Libri l3 = em.createQuery("SELECT l FROM Libri l WHERE l.codice_isbn = :isbn", Libri.class)
+                    .setParameter("isbn", "978-8804712345")
+                    .getSingleResult();
+
+
+            Riviste r1 = em.createQuery("SELECT r FROM Riviste r WHERE r.codice_isbn = :isbn", Riviste.class)
+                    .setParameter("isbn", "ISSN-1122-3344")
+                    .getSingleResult();
+
+            Riviste r2 = em.createQuery("SELECT r FROM Riviste r WHERE r.codice_isbn = :isbn", Riviste.class)
+                    .setParameter("isbn", "ISSN-5566-7788")
+                    .getSingleResult();
+
+
+            Prestito[] prestiti = {
+                    new Prestito(utente1, l1, LocalDate.now()),
+                    new Prestito(utente2, l2, LocalDate.now()),
+                    new Prestito(utente3, l3, LocalDate.now()),
+                    new Prestito(utente6, r1, LocalDate.now())
+            };
+
+// salvo con for
+            System.out.println("\n--- INIZIO CICLO DI SALVATAGGIO CON FOREACH ---");
+
+            for (Prestito p : prestiti) {
+
+                //leggo l'utente, se utente non è null e l'elemento prestato esiste allora salvo, altrimenti errore
+                if (p.getUtente() != null && p.getElementoPrestato() != null) {
+                    System.out.println("Salvataggio prestito per utente: " + p.getUtente().getNome());
+                    prestitoDAO.salva(p);
+                }  else {
+                    // lancio la mia custom exception
+                    throw new SalvataggioException("Errore: Impossibile creare il prestito (utente o elemento mancante).");
+                }
+            }
+
             System.out.println("--- OPERAZIONI COMPLETATE ---");
 
         } catch (Exception e) {
             System.out.println("=================================================");
             System.out.println(" ERRORE DURANTE L'ESECUZIONE!");
+            e.printStackTrace(); //ho inserito lo stacktrace perchè ho visto che è un metodo che mi stampa
+            //la causa dell'errore, l'ho aggiunto perchè in terminale avevo un errore di salvataggio dato dal
+            //fatto che eseguendo il codice mi continuava a salvare gli utenti con la stessa tessera e considerato che la tessera ha valore Unique continuava a lanciarmi in errore
+
             System.out.println("Dettagli dell'errore: " + e.getMessage());
             System.out.println("=================================================");
         } finally {
