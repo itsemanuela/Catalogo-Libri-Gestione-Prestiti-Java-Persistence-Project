@@ -1,9 +1,11 @@
 package entities.DAO;
 
 import entities.Catalogo;
+import entities.exceptions.ElementoNonTrovatoException;
 import entities.exceptions.SalvataggioException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 public class CatalogoDAO {
 
@@ -41,4 +43,42 @@ public class CatalogoDAO {
             System.err.println("Errore durante il salvataggio dell'elemento: " + e.getMessage());
         }
     }
+
+    // rimozione dal catalogo tramine codice ISBN
+
+    public void rimuoviElementoPerIsbn(String isbn) throws ElementoNonTrovatoException {
+        EntityTransaction transazione = em.getTransaction();
+        try {
+            transazione.begin();
+
+            // trovo l'elemento
+            Catalogo elemento = em.createQuery("SELECT c FROM Catalogo c WHERE c.codice_isbn = :isbn", Catalogo.class)
+                    .setParameter("isbn", isbn)
+                    .getSingleResult();
+
+            // elimino prima i prestiti all isbn collegato per un errore persistente nel terminale
+            // se un isbn è collegato ad un prestito non posso rimuoverlo
+
+            em.createQuery("DELETE FROM Prestito p WHERE p.elementoPrestato = :elemento")
+                    .setParameter("elemento", elemento)
+                    .executeUpdate();
+
+            // elimino
+            em.remove(elemento);
+
+            transazione.commit();
+            System.out.println("Elemento con ISBN " + isbn + " rimosso con successo.");
+
+        } catch (NoResultException e) {
+
+            throw new ElementoNonTrovatoException("Non ho trovato nessun libro/rivista con ISBN: " + isbn);
+        }
+    }
+
+
+
+
+
+
+
 }

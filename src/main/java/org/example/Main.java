@@ -4,6 +4,7 @@ import entities.*;
 import entities.DAO.CatalogoDAO;
 import entities.DAO.PrestitoDAO;
 import entities.DAO.UtenteDAO;
+import entities.exceptions.ElementoNonTrovatoException;
 import entities.exceptions.SalvataggioException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -137,6 +138,40 @@ public class Main {
                     throw new SalvataggioException("Errore: Impossibile creare il prestito (utente o elemento mancante).");
                 }
             }
+
+
+            //testo il metodo di rimozione di un elemento tramite codice isbn che ho collocato in catalogoDAO
+
+            try {
+
+                catalogoDAO.rimuoviElementoPerIsbn("978-8830455123");
+
+                System.out.println("Operazione completata con successo.");
+
+            } catch (ElementoNonTrovatoException e) {
+                System.err.println("Errore: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Errore imprevisto: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             System.out.println("--- OPERAZIONI COMPLETATE ---");
 
