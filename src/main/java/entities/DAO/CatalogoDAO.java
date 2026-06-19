@@ -88,8 +88,18 @@ public List<Catalogo> cercaPerTitolo(String titolo) {
             .getResultList();
 }
 
+// metodo cerca per anno di pubblicazione
+public List<Catalogo> cercaPerAnno(int anno) {
+    return em.createQuery("SELECT c FROM Catalogo c WHERE c.anno_pubblicazione = :anno", Catalogo.class)
+            .setParameter("anno", anno)
+            .getResultList();
+}
 
-
-
+// metodo cerca per autore
+public List<Catalogo> cercaPerAutore(String autore) {
+    return em.createQuery("SELECT c FROM Catalogo c WHERE c.autore = :autore", Catalogo.class)
+            .setParameter("autore", autore)
+            .getResultList();
+}
 
 }

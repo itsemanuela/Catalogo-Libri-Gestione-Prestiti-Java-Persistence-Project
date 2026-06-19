@@ -160,7 +160,7 @@ public class Main {
             // testo il metodo ricerca x titolo
             System.out.println("\n--- TEST RICERCA PER TITOLO ---");
 
-            String chiaveDiRicerca = "Viaggi";
+            String chiaveDiRicerca = "V";
             List<Catalogo> risultati = catalogoDAO.cercaPerTitolo(chiaveDiRicerca);
 
             if (risultati.isEmpty()) {
@@ -176,10 +176,13 @@ public class Main {
 
 
 
-
-
-
-
+// cerco per anno
+            List<Catalogo> perAnno = catalogoDAO.cercaPerAnno(2023);
+            perAnno.forEach(c -> System.out.println("Anno 2023: " + c.getTitolo()));
+//quando eseguo entrambi qs metodi il db fa il lavoro di JOIN tra le tabelle
+// cerco per autore
+            List<Catalogo> perAutore = catalogoDAO.cercaPerAutore("Stephen King");
+            perAutore.forEach(c -> System.out.println("Libro trovato: " + c.getTitolo()));
 
 
 
