@@ -7,6 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 
+import java.util.List;
+
 public class CatalogoDAO {
 
     private final EntityManager em;
@@ -51,7 +53,7 @@ public class CatalogoDAO {
         try {
             transazione.begin();
 
-            // trovo l'elemento
+            // trovo l'elemento || questo è anche metodo richiesto cerca per isbn
             Catalogo elemento = em.createQuery("SELECT c FROM Catalogo c WHERE c.codice_isbn = :isbn", Catalogo.class)
                     .setParameter("isbn", isbn)
                     .getSingleResult();
@@ -75,7 +77,16 @@ public class CatalogoDAO {
         }
     }
 
-
+//  metodo cerca per titolo O PARTE DI ESSO
+    // mi deve tornare una lista perchè probabile che io abbia piu di un risultato uguale
+public List<Catalogo> cercaPerTitolo(String titolo) {
+        //mi creo la query e selzioni dal catologo i titoli
+    return em.createQuery("SELECT c FROM Catalogo c WHERE c.titolo LIKE :titolo", Catalogo.class)
+            // setto i parametri con % che è un carattere speciale che nella ricerca LIKE
+            // indica al database di trovare qualsiasi sequenza di caratteri prima, dopo o in mezzo al testo cercato
+            .setParameter("titolo", "%" + titolo + "%")
+            .getResultList();
+}
 
 
 

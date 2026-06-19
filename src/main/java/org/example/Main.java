@@ -12,6 +12,7 @@ import jakarta.persistence.Persistence;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -155,6 +156,22 @@ public class Main {
                 e.printStackTrace();
             }
 
+
+            // testo il metodo ricerca x titolo
+            System.out.println("\n--- TEST RICERCA PER TITOLO ---");
+
+            String chiaveDiRicerca = "Viaggi";
+            List<Catalogo> risultati = catalogoDAO.cercaPerTitolo(chiaveDiRicerca);
+
+            if (risultati.isEmpty()) {
+                System.out.println("Nessun libro o rivista trovato con il titolo: " + chiaveDiRicerca);
+            } else {
+                System.out.println("Trovati " + risultati.size() + " elementi:");
+                for (Catalogo c : risultati) {
+                    System.out.println(" - " + c.getTitolo() + " (ISBN: " + c.getCodice_isbn() + ")");
+                }
+            }
+            System.out.println("--- TEST CONCLUSO ---");
 
 
 
