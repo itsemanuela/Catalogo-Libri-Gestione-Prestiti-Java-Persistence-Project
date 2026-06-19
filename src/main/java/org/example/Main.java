@@ -123,11 +123,17 @@ public class Main {
                     new Prestito(utente1, l1, LocalDate.now()),
                     new Prestito(utente2, l2, LocalDate.now()),
                     new Prestito(utente3, l3, LocalDate.now()),
-                    new Prestito(utente6, r1, LocalDate.now())
+                    new Prestito(utente6, r1, LocalDate.now()),
+                    new Prestito(utente1, l2, LocalDate.now()),
+                    new Prestito(utente5, l1, LocalDate.now()),
+                    new Prestito(utente2, l3, LocalDate.now()),
+                    new Prestito(utente3, r2, LocalDate.now()),
+                    new Prestito(utente6, r1, LocalDate.now()),
+                    new Prestito(utente1, l2, LocalDate.now()),
             };
 
 // salvo con for
-            System.out.println("\n--- INIZIO CICLO DI SALVATAGGIO CON FOREACH ---");
+            System.out.println("--- INIZIO CICLO DI SALVATAGGIO CON FOREACH ---");
 
             for (Prestito p : prestiti) {
 
@@ -208,8 +214,15 @@ public class Main {
             if (prestitiAttivi.isEmpty()) {
                 System.out.println("Nessun prestito in corso per questo utente.");
             } else {
-                System.out.println("Prestiti in corso:" + " " + prestitiAttivi.size());
-                prestitiAttivi.forEach(p -> System.out.println(" - " + p.getElementoPrestato().getTitolo()));
+                System.out.println("Prestiti in corso: " + prestitiAttivi.size());
+
+                prestitiAttivi.forEach(p -> {
+                    System.out.println("--- Dati Prestito ---");
+                    System.out.println("Utente: " + p.getUtente().getNome() + " " + p.getUtente().getCognome());
+                    System.out.println("Elemento: " + p.getElementoPrestato().getTitolo());
+                    System.out.println("Data inizio: " + p.getDataInizioPrestito());
+                    System.out.println("Data scadenza: " + p.getDataRestituzionePrevista());
+                });
             }
 
 
