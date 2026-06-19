@@ -58,11 +58,11 @@ public class PrestitoDAO {
         // La data odierna per il confronto
         LocalDate oggi = LocalDate.now();
 
-        String jpql = "SELECT p FROM Prestito p " +
+        String data3 = "SELECT p FROM Prestito p " +
                 "WHERE p.dataRestituzioneEffettiva IS NULL " +
                 "AND p.dataRestituzionePrevista < :dataOggi";
 
-        return em.createQuery(jpql, Prestito.class)
+        return em.createQuery(data3, Prestito.class)
                 .setParameter("dataOggi", oggi)
                 .getResultList();
     }
