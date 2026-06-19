@@ -1,12 +1,16 @@
 package org.example;
 
 import entities.DAO.CatalogoDAO;
+import entities.DAO.UtenteDAO;
 import entities.Libri;
 import entities.Riviste;
 import entities.PeriodicitaRiviste;
+import entities.Utente;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
+import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,22 +31,57 @@ public class Main {
 
             // istanzio DAO passandogli l'EntityManager attivo
             CatalogoDAO catalogoDAO = new CatalogoDAO(em);
+            UtenteDAO utenteDAO = new UtenteDAO(em);
+
 
             System.out.println("--- INIZIO CREAZIONE E SALVATAGGIO DATI ---");
 
-            // 3. Creiamo un'istanza di un Libro
-            Libri nuovoLibro = new Libri("978-8804668237", "Il Nome della Rosa", 1980, 503, "Umberto Eco", "Romanzo Storico");
+            // creo libri
+            Libri libro1 = new Libri("978-8830455123", "L'ultimo segreto di Parigi", 2018, 412, "Matteo Bianchi", "Thriller");
+            Libri libro2 = new Libri("978-8817099431", "Sotto le stelle di Napoli", 2021, 320, "Elena Russo", "Rosa");
+            Libri libro3 = new Libri("978-8804712345", "Il custode del tempo", 2015, 580, "Fabio Volpi", "Fantasy");
+            Libri libro4 = new Libri("978-8865439876", "Algoritmi e batticuore", 2024, 295, "Andrea De Luca", "Saggistica");
+            Libri libro5 = new Libri("978-8809887766", "La cucina della nonna moderna", 2023, 210, "Chiara Giordano", "Culinaria");
 
-            // creo una rivista di prova
+            // creo le riviste
+            Riviste rivista1 = new Riviste("ISSN-1122-3344", "Tech Tomorrow", 2026, 64, PeriodicitaRiviste.MENSILE);
+            Riviste rivista2 = new Riviste("ISSN-5566-7788", "Le Ricette del Borgo", 2025, 80, PeriodicitaRiviste.SETTIMANALE);
+            Riviste rivista3 = new Riviste("ISSN-9900-1122", "Focus Spazio", 2026, 96, PeriodicitaRiviste.MENSILE);
+            Riviste rivista4 = new Riviste("ISSN-3344-5566", "Arredamento Oggi", 2025, 120, PeriodicitaRiviste.MENSILE);
+            Riviste rivista5 = new Riviste("ISSN-7788-9900", "Viaggi e Culture", 2026, 145, PeriodicitaRiviste.SEMESTRALE);
 
-            Riviste nuovaRivista = new Riviste("ISSN-2041-1723", "Nature Communications", 2026, 85, PeriodicitaRiviste.SETTIMANALE);
+            // creo 6 utenti
+            Utente utente1 = new Utente("Marco", "Rossi", LocalDate.of(1990, 5, 12), "TESS-001");
+            Utente utente2 = new Utente("Giulia", "Verdi", LocalDate.of(1995, 8, 24), "TESS-002");
+            Utente utente3 = new Utente("Antonio", "Esposito", LocalDate.of(1988, 11, 2), "TESS-003");
+            Utente utente4 = new Utente("Sofia", "Ferrari", LocalDate.of(2000, 3, 15), "TESS-004");
+            Utente utente5 = new Utente("Luigi", "Romano", LocalDate.of(1975, 7, 30), "TESS-005");
+            Utente utente6 = new Utente("Beatrice", "Gallo", LocalDate.of(1993, 1, 18), "TESS-006");
+
+            // salvo utenti nel db
+            System.out.println("Esecuzione salvataggio Utenti...");
+            utenteDAO.salva(utente1);
+            utenteDAO.salva(utente2);
+            utenteDAO.salva(utente3);
+            utenteDAO.salva(utente4);
+            utenteDAO.salva(utente5);
+            utenteDAO.salva(utente6);
+
 
             //   metodo salva
-            System.out.println("\nEsecuzione salvataggio Libro...");
-            catalogoDAO.salva(nuovoLibro);
+            System.out.println("Esecuzione salvataggio Libri...");
+            catalogoDAO.salva(libro1);
+            catalogoDAO.salva(libro2);
+            catalogoDAO.salva(libro3);
+            catalogoDAO.salva(libro4);
+            catalogoDAO.salva(libro5);
 
-            System.out.println("Esecuzione salvataggio Rivista...");
-            catalogoDAO.salva(nuovaRivista);
+            System.out.println("Esecuzione salvataggio Riviste...");
+            catalogoDAO.salva(rivista1);
+            catalogoDAO.salva(rivista2);
+            catalogoDAO.salva(rivista3);
+            catalogoDAO.salva(rivista4);
+            catalogoDAO.salva(rivista5);
 
             System.out.println("--- OPERAZIONI COMPLETATE ---");
 
@@ -51,6 +90,16 @@ public class Main {
             System.out.println(" ERRORE DURANTE L'ESECUZIONE!");
             System.out.println("Dettagli dell'errore: " + e.getMessage());
             System.out.println("=================================================");
+        } finally {
+            // chiudo l'em e il database
+            System.out.println("=== CHIUSURA IN CORSO  ===");
+            if (em != null) {
+                em.close();
+            }
+            if (emf != null) {
+                emf.close();
+            }
+            System.out.println("Operazioni terminate, processo concluso");
         }
     }
 }
