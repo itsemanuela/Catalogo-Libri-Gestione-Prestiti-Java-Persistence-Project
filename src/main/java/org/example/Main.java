@@ -199,7 +199,18 @@ public class Main {
             System.out.println("Nuovo libro aggiunto" + " " +  nuovoLibro.getTitolo());
 
 
+            // --- TEST RICERCA PRESTITI ATTIVI PER TESSERA ---
+            System.out.println("--- TEST RICERCA PRESTITI ATTIVI PER TESSERA ---");
 
+// prendo una tessera di un utente che ho inserito nel DB
+
+            List<Prestito> prestitiAttivi = prestitoDAO.cercaPrestitiInCorsoPerUtente(utente3.getId());
+            if (prestitiAttivi.isEmpty()) {
+                System.out.println("Nessun prestito in corso per questo utente.");
+            } else {
+                System.out.println("Prestiti in corso:" + " " + prestitiAttivi.size());
+                prestitiAttivi.forEach(p -> System.out.println(" - " + p.getElementoPrestato().getTitolo()));
+            }
 
 
 
@@ -225,5 +236,14 @@ public class Main {
             }
             System.out.println("Operazioni terminate, processo concluso");
         }
+
+
+
+
     }
+
+
+
+
+
 }
